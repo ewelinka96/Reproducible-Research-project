@@ -1,0 +1,37 @@
+packages_vector = c("shiny", "shinythemes", "dplyr", "panelr", "viridis", "ggplot2", "readr", "ggrepel", "scales")
+
+package.check <- lapply(packages_vector, FUN = function(x) {
+  if (!require(x, character.only = TRUE)) {
+    install.packages(x, dependencies = TRUE)
+  }
+})
+
+setwd("/srv/shiny-server/myapp")
+
+
+#### UCR PREPROCESSING
+ucr <- read_csv("ucr_by_state.csv")
+ucr$year <- as.factor(ucr$year)
+ucr <- ucr[, -c(16:21)]
+ind <- apply(ucr, 1, function(x) all(is.na(x)))
+ucr <- ucr[ !ind, ]
+ucr$jurisdiction[ucr$jurisdiction=="DC"] <- "District of Columbia"
+ucr <- ucr %>% filter(jurisdiction!="Puerto Rico")
+ucr$rape_legacy <- NULL
+ucr$rape_revised <- NULL
+
+states_vector <- ucr$jurisdiction %>% na.omit() %>% unique()
+
+#### NUMBER OF PRISONERS
+
+prison <- read_csv("prison_custody_by_state.csv")
+colnames(prison)[3:18] <- paste0(colnames(prison)[3:18],'1')
+prison <- long_panel(prison, begin = 2001, end = 2016, label_location = "beginning", id = "jurisdiction")
+names(prison)[names(prison) == "wave"] <- "year"
+names(prison)[names(prison) == "1"] <- "prison"
+prison$year <- as.factor(prison$year)
+
+prison_ucr = inner_join(prison, ucr, by=c("jurisdiction", "year"))
+prison_ucr$violent_crime_total_per_pop <- prison_ucr$violent_crime_total/prison_ucr$state_population
+prison_ucr$property_crime_total_per_pop <- prison_ucr$property_crime_total/prison_ucr$state_population
+prison_ucr$prisoners_per_pop <- prison_ucr$prison/prison_ucr$state_population
