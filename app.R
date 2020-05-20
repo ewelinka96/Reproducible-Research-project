@@ -1,8 +1,10 @@
+
+setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
 library(shinythemes)
 library(shiny)
 library(devtools)
 library(dplyr)
-devtools::install_github('daattali/shinycssloaders')
+# devtools::install_github('daattali/shinycssloaders')
 library(shinycssloaders)
 source("dataPrep.R")
 

@@ -6,11 +6,11 @@ package.check <- lapply(packages_vector, FUN = function(x) {
   }
 })
 
-setwd("/srv/shiny-server/myapp")
-
+#setwd("/srv/shiny-server/myapp")
+setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
 
 #### UCR PREPROCESSING
-ucr <- read_csv("ucr_by_state.csv")
+ucr <- read_csv("data/ucr_by_state.csv")
 ucr$year <- as.factor(ucr$year)
 ucr <- ucr[, -c(16:21)]
 ind <- apply(ucr, 1, function(x) all(is.na(x)))
@@ -24,7 +24,7 @@ states_vector <- ucr$jurisdiction %>% na.omit() %>% unique()
 
 #### NUMBER OF PRISONERS
 
-prison <- read_csv("prison_custody_by_state.csv")
+prison <- read_csv("data/prison_custody_by_state.csv")
 colnames(prison)[3:18] <- paste0(colnames(prison)[3:18],'1')
 prison <- long_panel(prison, begin = 2001, end = 2016, label_location = "beginning", id = "jurisdiction")
 names(prison)[names(prison) == "wave"] <- "year"
