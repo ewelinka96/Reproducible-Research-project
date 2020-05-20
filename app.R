@@ -12,7 +12,12 @@ ui <- navbarPage("Title of app",
                  tabPanel("Crimes on map",
                           fluidPage(theme = shinytheme("flatly")),
                           pageWithSidebar(headerPanel('Apply filters'),
-                                          sidebarPanel(width = 4),
+                                          sidebarPanel(width = 4,
+                                                       checkboxGroupInput(inputId = "RegionFinder",
+                                                                          label = "Select Region(s):",
+                                                                          choices = c("New England" = "NewEngland", "Mid Atlantic" = "MidAtlantic", "Mid West" = "MidWest", "South", "West", "South West" = "SouthWest", "Pacific", "Alaska", "Hawaii"),
+                                                                          selected = "NewEngland")
+                                          ),
                                           mainPanel(column(8))
                           )
                  )
@@ -60,6 +65,44 @@ ui <- navbarPage("Title of app",
 
 server <- function(input, output){
     
+    states_finder <- reactive({
+        req(input$RegionFinder)
+        filter(ucr, region %in% input$RegionFinder)
+    })   
+    
+    
+    regions <- c("MidWest", "SouthWest")
+    years <- c("2008", "2009")
+    
+    
+    output$map <- renderPlot({
+ 
+        ucr_grouped <- ucr %>% 
+            filter(region %in% "MidWest" & as.numeric(ucr$year) >= 2008 & as.numeric(year) <= 2009) %>% 
+            group_by(jurisdiction) %>% 
+            summarise(robbery_mean = mean(robbery))
+        
+        
+        ucr %>% 
+            filter(region %in% c("MidWest", "SouthWest")) %>% 
+            filter(as.numeric(year) <= (2008-2000)) %>%
+            filter(as.numeric(year) >= (2002-2000)) %>%  
+            group_by(jurisdiction) %>% 
+            summarise(robbery_mean = mean(robbery))
+        
+        # rename variable for merging
+        names(ucr_grouped)[names(ucr_grouped) == "jurisdiction"] <- "NAME"
+        # merge grouped ucr and state spatial data
+        library(spData)
+        us_states_ucr <- merge(us_states, ucr_grouped, by = "NAME")
+        
+        ggplot(data = us_states_ucr) +
+            geom_sf(aes(fill = robbery_mean), lwd = 0, color = "white") +
+            scale_fill_viridis_c(option = "viridis", trans = "sqrt", name = "Property crimes\nper population") +
+            theme(legend.position = "none") +
+            theme_minimal()
+        
+    })
     
     
     output$scatter <- renderPlot({
