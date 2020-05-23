@@ -10,21 +10,21 @@ shinyUI(
   navbarPage("Title of app",
              tabPanel("Crimes on map",
                       fluidPage(theme = shinytheme("flatly")),
-             pageWithSidebar(headerPanel('Apply filters'),
-                             sidebarPanel(width = 4,
-                                          checkboxGroupInput(inputId = "RegionFinder",
-                                                             label = "Select Region(s):",
-                                                             choices = c("New England" = "NewEngland", "Mid Atlantic" = "MidAtlantic", "Mid West" = "MidWest", "South", "West", "South West" = "SouthWest", "Pacific", "Alaska", "Hawaii"),
-                                                             selected = "NewEngland")
-                             ),
-                             mainPanel(column(8), tableOutput('table1'))))
+                      pageWithSidebar(headerPanel('Apply filters'),
+                                      sidebarPanel(width = 4,
+                                                   checkboxGroupInput(inputId = "RegionFinder",
+                                                                      label = "Select Region(s):",
+                                                                      choices = c("New England" = "NewEngland", "Mid Atlantic" = "MidAtlantic", "Mid West" = "MidWest", "South", "West", "South West" = "SouthWest", "Pacific", "Alaska", "Hawaii"),
+                                                                      selected = "NewEngland")
+                                      ),
+                                      mainPanel(column(8), tableOutput('table1'))))
              ,
              tabPanel("Dumbbell plot",
                       fluidPage(theme = shinytheme("flatly")),
                       pageWithSidebar(headerPanel('Apply filters'),
                                       sidebarPanel(width = 4),
                                       mainPanel(column(8), tableOutput('table2'))
-                                      ))
+                      ))
              ,
              tabPanel("Scatterplot",
                       fluidPage(theme = shinytheme("flatly")),
@@ -55,8 +55,14 @@ shinyUI(
                                                                   multiple=TRUE),
                                                    submitButton("Update filters")
                                       ),
-                                      mainPanel(height = 10, 
-                                                withSpinner(plotOutput("scatter", height = "900px"), type = getOption("spinner.type", 7))
-                                      )
-                                      ))             
-))
+                                      mainPanel(height = 10,
+                                                fluidRow(column(3, offset = 9, 
+                                                                radioButtons(inputId = "labelChoice",
+                                                                             label = "Labels:",
+                                                                             choices = c("year", "state"),
+                                                                             selected = "year",
+                                                                             inline = TRUE))),
+                                                withSpinner(plotOutput("scatter", height = "900px"), 
+                                                            type = getOption("spinner.type", 7)))
+                      ))
+  ))
