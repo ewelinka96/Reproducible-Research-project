@@ -21,6 +21,7 @@ ucr$rape_legacy <- NULL
 ucr$rape_revised <- NULL
 
 states_vector <- ucr$jurisdiction %>% na.omit() %>% unique()
+region_vector <- ucr$region %>% na.omit() %>% unique()
 
 #### NUMBER OF PRISONERS
 

@@ -14,10 +14,16 @@ shinyUI(
                                       sidebarPanel(width = 4,
                                                    checkboxGroupInput(inputId = "RegionFinder",
                                                                       label = "Select Region(s):",
-                                                                      choices = c("New England" = "NewEngland", "Mid Atlantic" = "MidAtlantic", "Mid West" = "MidWest", "South", "West", "South West" = "SouthWest", "Pacific", "Alaska", "Hawaii"),
-                                                                      selected = "NewEngland")
+                                                                      choices = region_vector),
+                                                   sliderInput("yearMap", 
+                                                               "Year:",
+                                                               min = 2001, 
+                                                               max = 2016,
+                                                               sep="",
+                                                               value = c(2004,2008)),
+                                                   submitButton("Update filters")
                                       ),
-                                      mainPanel(column(8), tableOutput('table1'))))
+                                      mainPanel(column(8), plotOutput('mapPlot'))))
              ,
              tabPanel("Dumbbell plot",
                       fluidPage(theme = shinytheme("flatly")),
