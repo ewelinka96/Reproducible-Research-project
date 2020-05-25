@@ -2,13 +2,14 @@
 library(shiny)
 library(shinythemes)
 library(shinycssloaders)
+library(plotly)
 
 # Define UI for application that draws a histogram
 
 load(file="dataPrep.RData")
 
 shinyUI(
-  navbarPage("Title of app",
+  navbarPage("Crime analysis in USA",
              tabPanel("Crimes on map",
                       fluidPage(theme = shinytheme("flatly")),
                       pageWithSidebar(headerPanel('Apply filters'),
@@ -21,8 +22,7 @@ shinyUI(
                                                                min = 2001, 
                                                                max = 2016,
                                                                sep="",
-                                                               value = c(2004,2008)),
-                                                   submitButton("Update filters")
+                                                               value = c(2004,2008))
                                       ),
                                       mainPanel(column(8), plotOutput('mapPlot'))))
              ,
@@ -30,7 +30,7 @@ shinyUI(
                       fluidPage(theme = shinytheme("flatly")),
                       pageWithSidebar(headerPanel('Apply filters'),
                                       sidebarPanel(width = 4),
-                                      mainPanel(column(8), tableOutput('table2'))
+                                      mainPanel(column(8), plotlyOutput('dumbPlot'))
                       ))
              ,
              tabPanel("Scatterplot",
@@ -59,8 +59,7 @@ shinyUI(
                                                    selectizeInput("states",
                                                                   "States:",
                                                                   choices = states_vector,
-                                                                  multiple=TRUE),
-                                                   submitButton("Update filters")
+                                                                  multiple=TRUE)
                                       ),
                                       mainPanel(height = 10,
                                                 fluidRow(column(3, offset = 9, 
