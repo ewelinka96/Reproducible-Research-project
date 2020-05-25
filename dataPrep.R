@@ -1,10 +1,21 @@
-packages_vector = c("shiny", "shinythemes", "dplyr", "panelr", "viridis", "ggplot2", "readr", "ggrepel", "scales")
+packages_vector = c("shiny", "shinythemes", "dplyr", "panelr", "viridis", "ggplot2", "readr", "ggrepel", "scales", "spData")
 
 package.check <- lapply(packages_vector, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
     install.packages(x, dependencies = TRUE)
   }
 })
+
+library(shiny)
+library(shinythemes)
+library(dplyr)
+library(panelr)
+library(viridis)
+library(ggplot2)
+library(readr)
+library(ggrepel)
+library(scales)
+library(spData)
 
 #setwd("/srv/shiny-server/myapp")
 setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
@@ -64,10 +75,12 @@ ucr_grouped <- ucr %>%
 names(ucr_grouped)[names(ucr_grouped) == "jurisdiction"] <- "NAME"
 #merge grouped ucr and state spatial data
 library(spData)
+library(sf)
 us_states_ucr <- merge(us_states, ucr_grouped, by = "NAME")
+us_states_ucr <- sf::st_as_sf(us_states_ucr)
 
 ggplot(data = us_states_ucr) +
-  geom_sf(aes(fill = robbery_mean), lwd = 0, color = "white") +
+  geom_sf(aes(fill = robbery_mean, geometry=geometry), lwd = 0, color = "white") +
   scale_fill_viridis_c(option = "viridis", trans = "sqrt", name = "Property crimes\nper population") +
   theme(legend.position = "none") +
   theme_minimal()
