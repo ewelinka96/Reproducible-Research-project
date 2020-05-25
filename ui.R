@@ -1,3 +1,4 @@
+# install.packages(c("shiny", "shinythemes", "shinycssloaders"))
 library(shiny)
 library(shinythemes)
 library(shinycssloaders)
@@ -68,7 +69,7 @@ shinyUI(
                                                                              choices = c("year", "state"),
                                                                              selected = "year",
                                                                              inline = TRUE))),
-                                                withSpinner(plotOutput("scatter", height = "900px"), 
+                                                withSpinner(plotlyOutput("scatter", height = "500px"), 
                                                             type = getOption("spinner.type", 7)))
                       ))
   ))
