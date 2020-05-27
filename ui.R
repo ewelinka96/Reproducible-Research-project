@@ -13,10 +13,17 @@ shinyUI(
              tabPanel("Crimes on map",
                       fluidPage(theme = shinytheme("flatly")),
                       pageWithSidebar(headerPanel('Apply filters'),
-                                      sidebarPanel(width = 4,
-                                                   checkboxGroupInput(inputId = "RegionFinder",
-                                                                      label = "Select Region(s):",
-                                                                      choices = region_vector),
+                                      sidebarPanel(width = 3,
+                                                   selectizeInput("RegionFinder",
+                                                                  "Select Region(s):",
+                                                                  choices = region_vector,
+                                                                  multiple=TRUE),
+                                                   radioButtons(inputId = "crime_type_map",
+                                                                label = "Crime type:",
+                                                                choices = c("Violent" = "violent", 
+                                                                            "Property" = "property"),
+                                                                selected = "violent",
+                                                                inline = TRUE),
                                                    sliderInput("yearMap", 
                                                                "Year:",
                                                                min = 2001, 
@@ -24,13 +31,13 @@ shinyUI(
                                                                sep="",
                                                                value = c(2004,2008))
                                       ),
-                                      mainPanel(column(8), withSpinner(plotOutput('mapPlot'), type = getOption("spinner.type", 7)))))
+                                      mainPanel(column(6), withSpinner(plotOutput('mapPlot', width="100%", height="700px"), type = getOption("spinner.type", 7)))))
              ,
              tabPanel("Dumbbell plot",
                       fluidPage(theme = shinytheme("flatly")),
                       pageWithSidebar(headerPanel('Apply filters'),
-                                      sidebarPanel(width = 4),
-                                      mainPanel(column(8), withSpinner(plotlyOutput('dumbPlot')),  type = getOption("spinner.type", 7)))
+                                      sidebarPanel(width = 3),
+                                      mainPanel(withSpinner(plotlyOutput('dumbPlot')),  type = getOption("spinner.type", 7)))
                       )
              ,
              tabPanel("Scatterplot",
@@ -62,13 +69,13 @@ shinyUI(
                                                                   multiple=TRUE)
                                       ),
                                       mainPanel(height = 10,
+                                                withSpinner(plotlyOutput("scatter", height = "600px"), 
+                                                            type = getOption("spinner.type", 7)),
                                                 fluidRow(column(3, offset = 9, 
-                                                                radioButtons(inputId = "labelChoice",
-                                                                             label = "Labels:",
+                                                                radioButtons(inputId = "legendChoice",
+                                                                             label = "Legend:",
                                                                              choices = c("year", "state"),
                                                                              selected = "year",
-                                                                             inline = TRUE))),
-                                                withSpinner(plotlyOutput("scatter", height = "500px"), 
-                                                            type = getOption("spinner.type", 7)))
+                                                                             inline = TRUE))))
                       ))
   ))
