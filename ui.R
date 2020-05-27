@@ -9,7 +9,7 @@ library(plotly)
 load(file="dataPrep.RData")
 
 shinyUI(
-  navbarPage("Crime analysis in USA",
+  navbarPage("Crimes in USA",
              tabPanel("Crimes on map",
                       fluidPage(theme = shinytheme("flatly")),
                       pageWithSidebar(headerPanel('Apply filters'),
@@ -24,14 +24,14 @@ shinyUI(
                                                                sep="",
                                                                value = c(2004,2008))
                                       ),
-                                      mainPanel(column(8), plotOutput('mapPlot'))))
+                                      mainPanel(column(8), withSpinner(plotOutput('mapPlot'), type = getOption("spinner.type", 7)))))
              ,
              tabPanel("Dumbbell plot",
                       fluidPage(theme = shinytheme("flatly")),
                       pageWithSidebar(headerPanel('Apply filters'),
                                       sidebarPanel(width = 4),
-                                      mainPanel(column(8), plotlyOutput('dumbPlot'))
-                      ))
+                                      mainPanel(column(8), withSpinner(plotlyOutput('dumbPlot')),  type = getOption("spinner.type", 7)))
+                      )
              ,
              tabPanel("Scatterplot",
                       fluidPage(theme = shinytheme("flatly")),
