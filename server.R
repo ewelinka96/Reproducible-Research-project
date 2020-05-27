@@ -25,24 +25,51 @@ shinyServer(function(input, output) {
     
     req(length(regions)>0 & length(years)>0)
     
-    ucr_grouped <- ucr %>%
-      filter(region %in% regions) %>%
-      filter(as.numeric(year) <= (years[2]-2000)) %>%
-      filter(as.numeric(year) >= (years[1]-2000)) %>%
-      group_by(jurisdiction) %>%
-      summarise(robbery_mean = mean(robbery))
+    options(scipen=999)
     
-    names(ucr_grouped)[names(ucr_grouped) == "jurisdiction"] <- "NAME"
-    
-    us_states_ucr <- merge(us_states, ucr_grouped, by = "NAME")
-    us_states_ucr <- sf::st_as_sf(us_states_ucr)
-    
-    ggplot(data = us_states_ucr) +
-      geom_sf(aes(fill = robbery_mean, geometry = geometry), lwd = 0, color = "white") +
-      scale_fill_viridis_c(option = "viridis", trans = "sqrt", name = "Property crimes\nper population") +
-      theme(legend.position = "none") +
-      theme_minimal()
-    
+        {if(input$crime_type_map == "violent"){
+          
+                  ucr_grouped <- ucr %>%
+                    filter(region %in% regions) %>%
+                    filter(as.numeric(year) <= (years[2]-2000)) %>%
+                    filter(as.numeric(year) >= (years[1]-2000)) %>%
+                    group_by(jurisdiction) %>%
+                    summarise(violent_crime_total_mean = mean(violent_crime_total))
+                  
+                  names(ucr_grouped)[names(ucr_grouped) == "jurisdiction"] <- "NAME"
+                  
+                  us_states_ucr <- merge(us_states, ucr_grouped, by = "NAME")
+                  us_states_ucr <- sf::st_as_sf(us_states_ucr)
+                  
+                  ggplot(data = us_states_ucr) +
+                    geom_sf(aes(fill = violent_crime_total_mean, geometry = geometry), lwd = 0, color = "white") +
+                    scale_fill_viridis_c(option = "viridis", trans = "sqrt", name = "Violent crimes", labels = comma) +
+                    theme_minimal() +
+                    theme(legend.key.height = unit(5, "lines"),
+                          text = element_text(size=20))
+        }
+        else
+        {
+          ucr_grouped <- ucr %>%
+            filter(region %in% regions) %>%
+            filter(as.numeric(year) <= (years[2]-2000)) %>%
+            filter(as.numeric(year) >= (years[1]-2000)) %>%
+            group_by(jurisdiction) %>%
+            summarise(property_crime_total_mean = mean(property_crime_total))
+          
+          names(ucr_grouped)[names(ucr_grouped) == "jurisdiction"] <- "NAME"
+          
+          us_states_ucr <- merge(us_states, ucr_grouped, by = "NAME")
+          us_states_ucr <- sf::st_as_sf(us_states_ucr)
+          
+          ggplot(data = us_states_ucr) +
+            geom_sf(aes(fill = property_crime_total_mean, geometry = geometry), lwd = 0, color = "white") +
+            scale_fill_viridis_c(option = "viridis", trans = "sqrt", name = "Property crimes", labels = comma) +
+            theme_minimal() +
+            theme(legend.key.height = unit(5, "lines"),
+                  text = element_text(size=20))            
+          }}
+
 
     })
   
@@ -79,54 +106,54 @@ shinyServer(function(input, output) {
     prison_ucr_choice <- prison_ucr %>% filter((jurisdiction %in% input$states) & (year>=input$year[1] & year<=input$year[2]))
     req(nrow(prison_ucr_choice)>0)
     
-    ggplotly(ggplot(prison_ucr_choice,
-                    aes(x = prison/state_population,
-                        y = (prison_ucr_choice[,input$crime_type] %>% rowSums())/prison_ucr_choice$state_population,
-                        text = ~paste('Pct change: ', round(pct_change_violent), '%')))+
-                        {if(input$labelChoice == "year") geom_point(aes(colour = as.factor(jurisdiction)), show.legend = TRUE, alpha = 0.5, size=10)} +
-                        {if(input$labelChoice == "state") geom_point(aes(colour = as.factor(year)), show.legend = TRUE, alpha = 0.5, size=10)} +
-                        {if(input$labelChoice == "year") geom_text_repel(aes(label = as.factor(year)), size=5, hjust=-0.5, vjust=-0.5, color="black")} +
-                        {if(input$labelChoice == "state") geom_text_repel(aes(label = as.factor(jurisdiction)), size=5, hjust=-0.5, vjust=-0.5, color="black")} +
-               scale_color_viridis_d(name = "Years") +
-               scale_y_continuous(labels = comma) +
-               scale_x_continuous(labels = comma) +
-               labs(x = "Number of prisoners", y = "Total crimes") +
-               theme_minimal() +
-               theme(legend.position = "bottom",
-                     text = element_text(size=20)))
-
     if(input$percapita){
         ggplotly(ggplot(prison_ucr_choice,
                aes(x = prison/state_population,
-                   y = (prison_ucr_choice[,input$crime_type] %>% rowSums())/prison_ucr_choice$state_population)) +
-                   {if(input$labelChoice == "year") geom_point(aes(colour = as.factor(jurisdiction)), show.legend = TRUE, alpha = 0.5, size=10)} +
-                   {if(input$labelChoice == "state") geom_point(aes(colour = as.factor(year)), show.legend = TRUE, alpha = 0.5, size=10)} +
-                   {if(input$labelChoice == "year") geom_text_repel(aes(label = as.factor(year)), size=5, hjust=-0.5, vjust=-0.5, color="black")} +
-                   {if(input$labelChoice == "state") geom_text_repel(aes(label = as.factor(jurisdiction)), size=5, hjust=-0.5, vjust=-0.5, color="black")} +
+                   y = (prison_ucr_choice[,input$crime_type] %>% rowSums())/prison_ucr_choice$state_population,
+                   text = paste("Year: ", as.factor(year), 
+                                "<br>State: ", as.factor(jurisdiction),
+                                "<br>Number of prisoners:", round(prison/state_population, 4),
+                                "<br>Total crimes:", round((prison_ucr_choice[,input$crime_type] %>% rowSums())/prison_ucr_choice$state_population,4)))) +
+                   {if(input$legendChoice == "state") geom_point(aes(colour = as.factor(jurisdiction)), show.legend = TRUE, alpha = 0.5, size=5)} +
+                   {if(input$legendChoice == "year") geom_point(aes(colour = as.factor(year)), show.legend = TRUE, alpha = 0.5, size=5)} +
           scale_color_viridis_d(name = "Years") +
-          scale_y_continuous(labels = comma) +
-          scale_x_continuous(labels = comma) +
+          scale_x_continuous(labels = scales::comma, breaks = seq(0, 0.1, 0.0005)) +            
+          scale_y_continuous(labels = scales::comma, breaks = seq(0, 0.1, 0.005)) +
           labs(x = "Number of prisoners", y = "Total crimes") +
           theme_minimal() +
           theme(legend.position = "bottom",
-                text = element_text(size=20))) %>% layout(legend = list(orientation = 'h'))
+                text = element_text(size=20),
+                axis.text.x = element_blank(),
+                axis.text.y = element_blank(),
+                panel.grid = element_line(size=1, colour="grey", linetype = "solid")),
+          tooltip = "text") %>% layout(legend = list(orientation = "h",
+                                                     x = 0, y = -0.2),
+                                       height = 700)
 
       }
       else{
         ggplotly(ggplot(prison_ucr_choice,
                aes(x = prison,
-                   y = prison_ucr_choice[,input$crime_type] %>% rowSums())) +
-                   {if(input$labelChoice == "year") geom_point(aes(colour = as.factor(jurisdiction)), show.legend = TRUE, alpha = 0.5, size=10)} +
-                   {if(input$labelChoice == "state") geom_point(aes(colour = as.factor(year)), show.legend = TRUE, alpha = 0.5, size=10)} +
-                   {if(input$labelChoice == "year") geom_text_repel(aes(label = as.factor(year)), size=5, hjust=-0.5, vjust=-0.5, color="black")} +
-                   {if(input$labelChoice == "state") geom_text_repel(aes(label = as.factor(jurisdiction)), size=5, hjust=-0.5, vjust=-0.5, color="black")} +
+                   y = prison_ucr_choice[,input$crime_type] %>% rowSums(),
+                   text = paste("Year: ", as.factor(year), 
+                                "<br>State: ", as.factor(jurisdiction),
+                                "<br>Number of prisoners:", as.integer(prison) %>% comma(accuracy=1),
+                                "<br>Total crimes:", (prison_ucr_choice[,input$crime_type] %>% rowSums()) %>% comma(accuracy=1)))) +
+                   {if(input$legendChoice == "state") geom_point(aes(colour = as.factor(jurisdiction)), show.legend = TRUE, alpha = 0.5, size=5)} +
+                   {if(input$legendChoice == "year") geom_point(aes(colour = as.factor(year)), show.legend = TRUE, alpha = 0.5, size=5)} +
           scale_color_viridis_d(name = "Years") +
-          scale_y_continuous(labels = comma) +
-          scale_x_continuous(labels = comma) +
+          scale_y_continuous(labels = comma, breaks = seq(0, 5000000, 100000)) +
+          scale_x_continuous(labels = comma, breaks = seq(0, 1000000, 10000)) +
           labs(x = "Number of prisoners", y = "Total crimes") +
           theme_minimal() +
           theme(legend.position = "bottom",
-                text = element_text(size=20))) %>% layout(legend = list(orientation = 'h'))
+                text = element_text(size=20),
+                axis.text.x = element_blank(),
+                axis.text.y = element_blank(),
+                panel.grid = element_line(size=1, colour="grey", linetype = "solid")),
+          tooltip = "text") %>% layout(legend = list(orientation = "h",
+                                                     x = 0, y = -0.2),
+                                       height = 700)
 
     }
 
