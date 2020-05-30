@@ -10,8 +10,8 @@ library(readr)
 library(plotly)
 
 
-setwd("/srv/shiny-server/myapp")
-# setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
+#setwd("/srv/shiny-server/myapp")
+setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
 load(file="dataPrep.RData")
 
 # Define server logic required to draw a histogram
@@ -76,9 +76,8 @@ shinyServer(function(input, output) {
   
   output$dumbPlot <- renderPlotly({
     
-    
-    violent_plot <- plot_ly(violent, color = I("gray80"),
-                            text = ~paste('Pct change: ', round(pct_change_violent), '%')) %>%
+    violent_plot <- 
+      plot_ly(violent, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_violent), '%')) %>%
       add_segments(x = ~violent_crime_total_rate_2001, 
                    xend = ~violent_crime_total_rate_2016, 
                    y = ~jurisdiction, 
@@ -97,7 +96,53 @@ shinyServer(function(input, output) {
              autosize = F,
              height = 1000)
     
-    ggplotly(violent_plot, tooltip = "text")
+    property_plot <- 
+      plot_ly(property, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_property), '%')) %>%
+      add_segments(x = ~property_crime_total_rate_2001, 
+                   xend = ~property_crime_total_rate_2016, 
+                   y = ~jurisdiction, 
+                   yend = ~jurisdiction, 
+                   showlegend = FALSE) %>%
+      add_markers(x = ~property_crime_total_rate_2001, 
+                  y = ~jurisdiction, 
+                  color = I("#79D150")) %>%
+      add_markers(x = ~property_crime_total_rate_2016, 
+                  y = ~jurisdiction, 
+                  color = I("#355F8D")) %>%
+      layout(title="Percent change in state property crime rates, 2001 vs 2016",
+             margin = list(l = 65),
+             showlegend = FALSE,
+             yaxis = list(size = 0.8),
+             autosize = F,
+             height = 1000)
+    
+    imprisonment_plot <- 
+      plot_ly(imprisonment, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_imprisonment), '%')) %>%
+      add_segments(x = ~imprisonment_rate_2001, 
+                   xend = ~imprisonment_rate_2016, 
+                   y = ~jurisdiction, 
+                   yend = ~jurisdiction, 
+                   showlegend = FALSE) %>%
+      add_markers(x = ~imprisonment_rate_2001, 
+                  y = ~jurisdiction, 
+                  color = I("#79D150")) %>%
+      add_markers(x = ~imprisonment_rate_2016, 
+                  y = ~jurisdiction, 
+                  color = I("#355F8D")) %>%
+      layout(title="Percent change in state imprisonment rates, 2001 vs 2016",
+             margin = list(l = 65),
+             showlegend = FALSE,
+             yaxis = list(size = 0.8),
+             autosize = F,
+             height = 1000)
+    
+    if (input$rate_type == "violent") {
+      ggplotly(violent_plot, tooltip = "text")
+    } else if (input$rate_type == "property") {
+      ggplotly(property_plot, tooltip = "text")
+    } else if (input$rate_type == "imprisonment")  {
+      ggplotly(imprisonment_plot, tooltip = "text")
+    }
     
   })
   
@@ -158,6 +203,13 @@ shinyServer(function(input, output) {
     }
 
   })
+  
+  output$downloadPlot <- downloadHandler(
+    filename = function() { 'plot.png' },
+    content = function(file) {
+      ggsave(file, plot = ggplot2::last_plot(), device = "png")
+    }
+  )
   
   
 }
