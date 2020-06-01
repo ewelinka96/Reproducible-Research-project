@@ -3,6 +3,7 @@ library(shiny)
 library(shinythemes)
 library(shinycssloaders)
 library(plotly)
+library(DT)
 
 load(file="dataPrep.RData")
 
@@ -40,7 +41,7 @@ shinyUI(
                                       sidebarPanel(width = 3,
                                                    helpText('In order to see plot, specify required parameters: Crime type, States.'),
                                                    radioButtons(inputId = "rate_type",
-                                                                label = "Crime type:",
+                                                                label = "Data type:",
                                                                 choices = c("Violent crime rate" = "violent", 
                                                                             "Property crime rate" = "property",
                                                                             "Imprisonment rate" = "imprisonment"),
@@ -52,7 +53,7 @@ shinyUI(
                                                    
                                                    ),
                                       mainPanel(
-                                        conditionalPanel("length(input.statesDumb) > 3",
+                                        conditionalPanel("input.statesDumb.length > 3",
                                                          withSpinner(plotlyOutput('dumbPlot'),  type = getOption("spinner.type", 7))
                                         )
                                         
@@ -100,4 +101,8 @@ shinyUI(
                                                                              selected = "year",
                                                                              inline = TRUE))))
                       ))
+             ,
+             tabPanel("Data",
+                      fluidPage(theme = shinytheme("flatly")),
+                      dataTableOutput("ucr_table"))
   ))

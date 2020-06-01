@@ -8,6 +8,7 @@ library(sf)
 library(spData)
 library(readr)
 library(plotly)
+library(DT)
 
 
 setwd("/srv/shiny-server/myapp")
@@ -251,6 +252,16 @@ shinyServer(function(session, input, output) {
     }
   )
   
+  
+  
+  output$ucr_table <- renderDataTable(as.data.frame(ucr) %>% 
+                                        select(jurisdiction, 
+                                               year, 
+                                               violent_crime_total, murder_manslaughter, robbery, agg_assault, 
+                                               property_crime_total, burglary, larceny, vehicle_theft) %>% 
+                                        mutate(year = as.integer(year)+2000), 
+                                      options = list(pageLength = 10),
+                                      filter = list(position = 'top', clear = FALSE, plain = TRUE))  
   
 }
 )
