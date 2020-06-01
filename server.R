@@ -15,7 +15,7 @@ setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
 load(file="dataPrep.RData")
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(session, input, output) {
 
 
   output$mapPlot <- renderPlot({
@@ -76,8 +76,12 @@ shinyServer(function(input, output) {
   
   output$dumbPlot <- renderPlotly({
     
+    violent_choice <- violent %>% filter(jurisdiction %in% input$states)
+    property_choice <- property %>% filter(jurisdiction %in% input$states)
+    imprisonment_choice <- imprisonment %>% filter(jurisdiction %in% input$states)
+    
     violent_plot <- 
-      plot_ly(violent, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_violent), '%')) %>%
+      plot_ly(violent_choice, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_violent), '%')) %>%
       add_segments(x = ~violent_crime_total_rate_2001, 
                    xend = ~violent_crime_total_rate_2016, 
                    y = ~jurisdiction, 
@@ -97,7 +101,7 @@ shinyServer(function(input, output) {
              height = 1000)
     
     property_plot <- 
-      plot_ly(property, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_property), '%')) %>%
+      plot_ly(property_choice, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_property), '%')) %>%
       add_segments(x = ~property_crime_total_rate_2001, 
                    xend = ~property_crime_total_rate_2016, 
                    y = ~jurisdiction, 
@@ -117,7 +121,7 @@ shinyServer(function(input, output) {
              height = 1000)
     
     imprisonment_plot <- 
-      plot_ly(imprisonment, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_imprisonment), '%')) %>%
+      plot_ly(imprisonment_choice, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_imprisonment), '%')) %>%
       add_segments(x = ~imprisonment_rate_2001, 
                    xend = ~imprisonment_rate_2016, 
                    y = ~jurisdiction, 
@@ -137,17 +141,31 @@ shinyServer(function(input, output) {
              height = 1000)
     
     if (input$rate_type == "violent") {
+      req(nrow(violent_choice)>0)
       ggplotly(violent_plot, tooltip = "text")
     } else if (input$rate_type == "property") {
+      req(nrow(property_choice)>0)
       ggplotly(property_plot, tooltip = "text")
     } else if (input$rate_type == "imprisonment")  {
+      req(nrow(imprisonment_choice)>0)
       ggplotly(imprisonment_plot, tooltip = "text")
     }
     
   })
   
+  
+  # do przetestowania czy działa w scattterplot
+  # observe({
+  #   if ("Select all" %in% input$crime_type) {
+  #     # choose all the choices _except_ "Select All"
+  #     selected_choices <- setdiff(choices, "Select all")
+  #     updateSelectInput(session, "crime_type", selected = selected_choices)
+  #   }
+  # })
+  
+  
   output$scatter <- renderPlotly({
-
+    
     prison_ucr_choice <- prison_ucr %>% filter((jurisdiction %in% input$states) & (year>=input$year[1] & year<=input$year[2]))
     req(nrow(prison_ucr_choice)>0)
     

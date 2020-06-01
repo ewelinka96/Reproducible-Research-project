@@ -4,16 +4,15 @@ library(shinythemes)
 library(shinycssloaders)
 library(plotly)
 
-# Define UI for application that draws a histogram
-
 load(file="dataPrep.RData")
 
 shinyUI(
   navbarPage("Crimes in USA",
              tabPanel("Crimes on map",
                       fluidPage(theme = shinytheme("flatly")),
-                      pageWithSidebar(headerPanel('Apply filters'),
+                      pageWithSidebar(headerPanel(''),
                                       sidebarPanel(width = 3,
+                                                   helpText('In order to see plot, specify required parameters: Year, Crime type, Regions.'),
                                                    sliderInput("yearMap", 
                                                                "Year:",
                                                                min = 2001, 
@@ -30,27 +29,35 @@ shinyUI(
                                                                   "Regions:",
                                                                   choices = region_vector,
                                                                   multiple=TRUE),
+                                                   helpText("Click Download in order to save plot in .png format."),
                                                    downloadButton('downloadPlot', 'Download')
                                       ),
                                       mainPanel(column(6), withSpinner(plotOutput('mapPlot', width="100%", height="700px"), type = getOption("spinner.type", 7)))))
              ,
              tabPanel("Dumbbell plot",
                       fluidPage(theme = shinytheme("flatly")),
-                      pageWithSidebar(headerPanel('Apply filters'),
+                      pageWithSidebar(headerPanel(''),
                                       sidebarPanel(width = 3,
+                                                   helpText('In order to see plot, specify required parameters: Crime type, States.'),
                                                    radioButtons(inputId = "rate_type",
                                                                 label = "Crime type:",
                                                                 choices = c("Violent crime rate" = "violent", 
                                                                             "Property crime rate" = "property",
                                                                             "Imprisonment rate" = "imprisonment"),
-                                                                selected = "violent")),
-                                      mainPanel(withSpinner(plotlyOutput('dumbPlot')),  type = getOption("spinner.type", 7)))
+                                                                selected = "violent"),
+                                                   selectizeInput("states",
+                                                                  "States:",
+                                                                  choices = states_vector,
+                                                                  multiple=TRUE)
+                                                   ),
+                                      mainPanel(withSpinner(plotlyOutput('dumbPlot'),  type = getOption("spinner.type", 7))))
                       )
              ,
              tabPanel("Scatterplot",
                       fluidPage(theme = shinytheme("flatly")),
-                      pageWithSidebar(headerPanel('Scatterplot analysis'),
+                      pageWithSidebar(headerPanel(''),
                                       sidebarPanel(width = 3,
+                                                   helpText('In order to see plot, specify required parameters: Year, Crime type, States.'),
                                                    sliderInput("year", 
                                                                "Year:",
                                                                min = 2001, 
@@ -62,14 +69,16 @@ shinyUI(
                                                                  value = FALSE),
                                                    checkboxGroupInput("crime_type",
                                                                       "Crime type:", 
-                                                                      choices = list("murder and manslaughter" = "murder_manslaughter", 
-                                                                                     "robbery" = "robbery", 
-                                                                                     "aggrevated assault" = "agg_assault", 
-                                                                                     "burglary" = "burglary", 
-                                                                                     "larceny" = "larceny", 
-                                                                                     "vehicle theft" = "vehicle_theft"),
+                                                                      choices = list("Select all" = "all",
+                                                                                     "Murder and manslaughter" = "murder_manslaughter", 
+                                                                                     "Robbery" = "robbery", 
+                                                                                     "Aggrevated assault" = "agg_assault", 
+                                                                                     "Burglary" = "burglary", 
+                                                                                     "Larceny" = "larceny", 
+                                                                                     "Vehicle theft" = "vehicle_theft"),
                                                                       selected = 1
                                                    ),
+                                                   verbatimTextOutput("selected"),
                                                    selectizeInput("states",
                                                                   "States:",
                                                                   choices = states_vector,
