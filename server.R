@@ -10,8 +10,8 @@ library(readr)
 library(plotly)
 
 
-#setwd("/srv/shiny-server/myapp")
-setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
+setwd("/srv/shiny-server/myapp")
+# setwd("/Users/ewelinka/Desktop/RR_app/Reproducible-Research-project")
 load(file="dataPrep.RData")
 
 # Define server logic required to draw a histogram
@@ -76,69 +76,86 @@ shinyServer(function(session, input, output) {
   
   output$dumbPlot <- renderPlotly({
     
-    violent_choice <- violent %>% filter(jurisdiction %in% input$states)
-    property_choice <- property %>% filter(jurisdiction %in% input$states)
-    imprisonment_choice <- imprisonment %>% filter(jurisdiction %in% input$states)
+    violent_choice <- violent %>% filter(jurisdiction %in% input$statesDumb)
+    property_choice <- property %>% filter(jurisdiction %in% input$statesDumb)
+    imprisonment_choice <- imprisonment %>% filter(jurisdiction %in% input$statesDumb)
+   
+    
+    if (length(input$statesDumb)<10) {
+      h = 550
+    }
+    else if (length(input$statesDumb)<30) {
+      h = 650
+    }
+    else if (length(input$statesDumb)<40) {
+      h = 800
+    }  
+    else {
+      h = 1000
+    }      
     
     violent_plot <- 
       plot_ly(violent_choice, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_violent), '%')) %>%
       add_segments(x = ~violent_crime_total_rate_2001, 
                    xend = ~violent_crime_total_rate_2016, 
-                   y = ~jurisdiction, 
-                   yend = ~jurisdiction, 
+                   y = ~as.character(jurisdiction), 
+                   yend = ~as.character(jurisdiction), 
                    showlegend = FALSE) %>%
       add_markers(x = ~violent_crime_total_rate_2001, 
-                  y = ~jurisdiction, 
+                  y = ~as.character(jurisdiction), 
                   color = I("#79D150")) %>%
       add_markers(x = ~violent_crime_total_rate_2016, 
-                  y = ~jurisdiction, 
+                  y = ~as.character(jurisdiction), 
                   color = I("#355F8D")) %>%
       layout(title="Percent change in state violent crime rates, 2001 vs 2016",
              margin = list(l = 65),
              showlegend = FALSE,
-             yaxis = list(size = 0.8),
-             autosize = F,
-             height = 1000)
+             xaxis = list(title = ""),
+             yaxis = list(title = "",size = 0.8),
+             autosize = F, 
+             height = h)
     
     property_plot <- 
       plot_ly(property_choice, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_property), '%')) %>%
       add_segments(x = ~property_crime_total_rate_2001, 
                    xend = ~property_crime_total_rate_2016, 
-                   y = ~jurisdiction, 
-                   yend = ~jurisdiction, 
+                   y = ~as.character(jurisdiction), 
+                   yend = ~as.character(jurisdiction), 
                    showlegend = FALSE) %>%
       add_markers(x = ~property_crime_total_rate_2001, 
-                  y = ~jurisdiction, 
+                  y = ~as.character(jurisdiction), 
                   color = I("#79D150")) %>%
       add_markers(x = ~property_crime_total_rate_2016, 
-                  y = ~jurisdiction, 
+                  y = ~as.character(jurisdiction), 
                   color = I("#355F8D")) %>%
       layout(title="Percent change in state property crime rates, 2001 vs 2016",
              margin = list(l = 65),
              showlegend = FALSE,
-             yaxis = list(size = 0.8),
-             autosize = F,
-             height = 1000)
+             xaxis = list(title = ""),
+             yaxis = list(title = "",size = 0.8),
+             autosize = F, 
+             height = h)
     
     imprisonment_plot <- 
       plot_ly(imprisonment_choice, color = I("gray80"), text = ~paste('Pct change: ', round(pct_change_imprisonment), '%')) %>%
       add_segments(x = ~imprisonment_rate_2001, 
                    xend = ~imprisonment_rate_2016, 
-                   y = ~jurisdiction, 
-                   yend = ~jurisdiction, 
+                   y = ~as.character(jurisdiction), 
+                   yend = ~as.character(jurisdiction), 
                    showlegend = FALSE) %>%
       add_markers(x = ~imprisonment_rate_2001, 
-                  y = ~jurisdiction, 
+                  y = ~as.character(jurisdiction), 
                   color = I("#79D150")) %>%
       add_markers(x = ~imprisonment_rate_2016, 
-                  y = ~jurisdiction, 
+                  y = ~as.character(jurisdiction), 
                   color = I("#355F8D")) %>%
       layout(title="Percent change in state imprisonment rates, 2001 vs 2016",
              margin = list(l = 65),
              showlegend = FALSE,
-             yaxis = list(size = 0.8),
-             autosize = F,
-             height = 1000)
+             xaxis = list(title = ""),
+             yaxis = list(title = "",size = 0.8),
+             autosize = F, 
+             height = h)
     
     if (input$rate_type == "violent") {
       req(nrow(violent_choice)>0)
@@ -153,21 +170,26 @@ shinyServer(function(session, input, output) {
     
   })
   
-  
   # do przetestowania czy działa w scattterplot
-  # observe({
-  #   if ("Select all" %in% input$crime_type) {
-  #     # choose all the choices _except_ "Select All"
-  #     selected_choices <- setdiff(choices, "Select all")
-  #     updateSelectInput(session, "crime_type", selected = selected_choices)
-  #   }
-  # })
+  observe({
+    if ("all" %in% input$crime_type) {
+      # choose all the choices _except_ "Select All"
+      selected_choices <- c("murder_manslaughter", 
+                            "robbery", 
+                            "agg_assault", 
+                            "burglary", 
+                            "larceny", 
+                            "vehicle_theft")
+      updateSelectInput(session, "crime_type", selected = selected_choices)
+    }
+  })
   
   
   output$scatter <- renderPlotly({
     
     prison_ucr_choice <- prison_ucr %>% filter((jurisdiction %in% input$states) & (year>=input$year[1] & year<=input$year[2]))
     req(nrow(prison_ucr_choice)>0)
+    req(!("all" %in% input$crime_type))
     
     if(input$percapita){
         ggplotly(ggplot(prison_ucr_choice,

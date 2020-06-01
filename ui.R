@@ -45,12 +45,18 @@ shinyUI(
                                                                             "Property crime rate" = "property",
                                                                             "Imprisonment rate" = "imprisonment"),
                                                                 selected = "violent"),
-                                                   selectizeInput("states",
+                                                   selectizeInput("statesDumb",
                                                                   "States:",
                                                                   choices = states_vector,
                                                                   multiple=TRUE)
+                                                   
                                                    ),
-                                      mainPanel(withSpinner(plotlyOutput('dumbPlot'),  type = getOption("spinner.type", 7))))
+                                      mainPanel(
+                                        conditionalPanel("length(input.statesDumb) > 3",
+                                                         withSpinner(plotlyOutput('dumbPlot'),  type = getOption("spinner.type", 7))
+                                        )
+                                        
+                                        ))
                       )
              ,
              tabPanel("Scatterplot",
@@ -78,7 +84,6 @@ shinyUI(
                                                                                      "Vehicle theft" = "vehicle_theft"),
                                                                       selected = 1
                                                    ),
-                                                   verbatimTextOutput("selected"),
                                                    selectizeInput("states",
                                                                   "States:",
                                                                   choices = states_vector,
