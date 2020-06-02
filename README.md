@@ -1,12 +1,3 @@
----
-title: "README"
-runtime: shiny
-output:
-  prettydoc::html_pretty:
-    theme: architect
-    highlight: github
----
-
 # TL;DR
 
 Shiny application address: http://54.173.110.165:3838/myapp/ or https://tinyurl.com/myshinyapp
