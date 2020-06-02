@@ -22,13 +22,13 @@ The application uses the following packages :
 [`shinythemes`](https://rstudio.github.io/shinythemes/), 
 [`dplyr`](https://github.com/tidyverse/dplyr),
 [`scales`](https://github.com/r-lib/scales),
-[`viridis `](https://ggplot2.tidyverse.org/reference/scale_viridis.html)
-[`ggplot2`](https://ggplot2.tidyverse.org/)
-[`ggrepel`](https://www.rdocumentation.org/packages/ggrepel/versions/0.7.0)
-[`sf`](https://cran.r-project.org/web/packages/sf/index.html)
-[`spData`](https://cran.r-project.org/web/packages/spData/index.html)
-[`readr`](https://readr.tidyverse.org/)
-[`shinycssloaders`](https://github.com/daattali/shinycssloaders)
+[`viridis `](https://ggplot2.tidyverse.org/reference/scale_viridis.html),
+[`ggplot2`](https://ggplot2.tidyverse.org/),
+[`ggrepel`](https://www.rdocumentation.org/packages/ggrepel/versions/0.7.0),
+[`sf`](https://cran.r-project.org/web/packages/sf/index.html),
+[`spData`](https://cran.r-project.org/web/packages/spData/index.html),
+[`readr`](https://readr.tidyverse.org/),
+[`shinycssloaders`](https://github.com/daattali/shinycssloaders),
 [`plotly`](https://plotly.com/)
 
 ## App functionality
@@ -88,7 +88,7 @@ The main objective of this project is to review general crime and incarceration 
 
 ### Data description and preprocessing
 
-The datasets used in the below analysis were sourced from www.kaggle.com website [^kaggle]. They were created based on several sources including the Bureau of Justice Statistics [^bjs] and FBI Uniform Crime Reporting Program [^fbi]. The National Prisoner Statistics Program conducted by the Bureau of Justice Statistics has collected data on the number of prisoners in state and federal prison facilities since 1926. It is produced annually on national and state level. Data are sourced from 50 state departments of correction, the Federal Bureau of Prisons, and until 2001, from the District of Columbia. The UCR Program provides statistics on violent and property crimes. Data are collected annually and are available on national, state and city level. For the purposes of our analysis we are using state-level statistics.
+The datasets used in the below analysis were sourced from www.kaggle.com website <sup>[1](#kaggle)</sup>. They were created based on several sources including the Bureau of Justice Statistics [^bjs] and FBI Uniform Crime Reporting Program [^fbi]. The National Prisoner Statistics Program conducted by the Bureau of Justice Statistics has collected data on the number of prisoners in state and federal prison facilities since 1926. It is produced annually on national and state level. Data are sourced from 50 state departments of correction, the Federal Bureau of Prisons, and until 2001, from the District of Columbia. The UCR Program provides statistics on violent and property crimes. Data are collected annually and are available on national, state and city level. For the purposes of our analysis we are using state-level statistics.
 
 Additionally, we individually collected data on federal expenditures (direct expenditures; corrections) for correctional institutions provided by the Bureau of Justice Statistics for each state between 2009 and 2016 [^prison_exp]. Later in the analysis we will use them in order to correlate the expenditures with the occurence of particular crimes. Apart from the number of total incarcerated prisoners we also collected information on the number of prisoners in private prisons across several states for the same years as prison expenditures [^prisoners].
 
@@ -105,7 +105,7 @@ The prison data, compared to ucr is in a panel form, consisting of years as colu
 In order to enhance further visualisations, we add an information about state area and region based on R built-in *us_states* dataset
 
 
-
+<a name="kaggle">1</a>: Source: https://www.kaggle.com/christophercorrea/prisoners-and-crime-in-united-states
 [^kaggle]: Source: https://www.kaggle.com/christophercorrea/prisoners-and-crime-in-united-states
 [^bjs]: Source: https://www.bjs.gov/index.cfm?ty=dcdetail&iid=269.
 [^fbi]: Source: https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeStatebyState.cfm.
