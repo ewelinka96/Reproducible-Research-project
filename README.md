@@ -63,7 +63,7 @@ Additional information:
 
 **Scatterplot**
 
-In this tab can be seen the analysis examining the relation between incarceration and crame rates.
+In this tab can be seen the analysis examining the relation between incarceration and crime rates.
 
 The following parameters can be specified:
 
@@ -75,11 +75,11 @@ The following parameters can be specified:
 
 Additional information: 
 
-- possibility of selecting all crime types
+- Possibility of selecting all crime types
 
 **Data**
 
-In this tab can be seen a tabular version of data on different tyopes of crimes committed in different states across years.
+In this tab can be seen a tabular version of data on different types of crimes committed in different states across years.
 
 ## About the analysis
 
