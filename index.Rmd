@@ -27,13 +27,13 @@ The application uses the following packages :
 [`shinythemes`](https://rstudio.github.io/shinythemes/), 
 [`dplyr`](https://github.com/tidyverse/dplyr),
 [`scales`](https://github.com/r-lib/scales),
-[`viridis `](https://ggplot2.tidyverse.org/reference/scale_viridis.html)
-[`ggplot2`](https://ggplot2.tidyverse.org/)
-[`ggrepel`](https://www.rdocumentation.org/packages/ggrepel/versions/0.7.0)
-[`sf`](https://cran.r-project.org/web/packages/sf/index.html)
-[`spData`](https://cran.r-project.org/web/packages/spData/index.html)
-[`readr`](https://readr.tidyverse.org/)
-[`shinycssloaders`](https://github.com/daattali/shinycssloaders)
+[`viridis `](https://ggplot2.tidyverse.org/reference/scale_viridis.html),
+[`ggplot2`](https://ggplot2.tidyverse.org/),
+[`ggrepel`](https://www.rdocumentation.org/packages/ggrepel/versions/0.7.0),
+[`sf`](https://cran.r-project.org/web/packages/sf/index.html),
+[`spData`](https://cran.r-project.org/web/packages/spData/index.html),
+[`readr`](https://readr.tidyverse.org/),
+[`shinycssloaders`](https://github.com/daattali/shinycssloaders),
 [`plotly`](https://plotly.com/)
 
 ## App functionality
