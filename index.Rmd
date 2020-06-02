@@ -7,10 +7,6 @@ output:
     highlight: github
 ---
 
-# TL;DR
-
-Shiny application address: http://54.173.110.165:3838/myapp/ or https://tinyurl.com/myshinyapp
-
 ## About the app
 
 **Files**

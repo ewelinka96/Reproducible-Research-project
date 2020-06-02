@@ -1,4 +1,6 @@
-# TL;DR
+# Crimes in USA - shiny app
+
+## TL;DR
 
 Shiny application address: http://54.173.110.165:3838/myapp/ or https://tinyurl.com/myshinyapp
 
@@ -103,5 +105,7 @@ In order to enhance further visualizations, we add an information about state ar
 
 
 <a name="kaggle">1</a>: Source: https://www.kaggle.com/christophercorrea/prisoners-and-crime-in-united-states
+
 <a name="bjs">2</a>: Source: https://www.bjs.gov/index.cfm?ty=dcdetail&iid=269.
+
 <a name="fbi">3</a>: Source: https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeStatebyState.cfm.
