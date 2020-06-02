@@ -93,30 +93,26 @@ In this tab can be seen a tabular version of data on different tyopes of crimes 
 
 ### Introduction
 
-The main objective of this project is to review general crime and incarceration trends in the United States and also examine the relationships in data regarding crimes commited, number of prisoners and prison expenditures across time and states. We enrich the report with visualisations that help to detect important insights. Besides statistical analysis, we also take a stab at clustering state regions in order to define groups that follow similar tendency in crime.
+The main objective of this project is to review general crime and incarceration trends in the United States and also examine the relationships in data regarding crimes committed and number of prisoners across time and states. 
 
 ### Data description and preprocessing
 
-The datasets used in the below analysis were sourced from www.kaggle.com website [^kaggle]. They were created based on several sources including the Bureau of Justice Statistics [^bjs] and FBI Uniform Crime Reporting Program [^fbi]. The National Prisoner Statistics Program conducted by the Bureau of Justice Statistics has collected data on the number of prisoners in state and federal prison facilities since 1926. It is produced annually on national and state level. Data are sourced from 50 state departments of correction, the Federal Bureau of Prisons, and until 2001, from the District of Columbia. The UCR Program provides statistics on violent and property crimes. Data are collected annually and are available on national, state and city level. For the purposes of our analysis we are using state-level statistics.
-
-Additionally, we individually collected data on federal expenditures (direct expenditures; corrections) for correctional institutions provided by the Bureau of Justice Statistics for each state between 2009 and 2016 [^prison_exp]. Later in the analysis we will use them in order to correlate the expenditures with the occurence of particular crimes. Apart from the number of total incarcerated prisoners we also collected information on the number of prisoners in private prisons across several states for the same years as prison expenditures [^prisoners].
+The datasets used in the analysis were sourced from www.kaggle.com website [^kaggle]. They were created based on several sources including the Bureau of Justice Statistics [^bjs] and FBI Uniform Crime Reporting Program [^fbi]. The National Prisoner Statistics Program conducted by the Bureau of Justice Statistics has collected data on the number of prisoners in state and federal prison facilities since 1926. It is produced annually on national and state level. Data are sourced from 50 state departments of correction, the Federal Bureau of Prisons, and until 2001, from the District of Columbia. The UCR Program provides statistics on violent and property crimes. Data are collected annually and are available on national, state and city level. For the purposes of our analysis we are using state-level statistics.
 
 **UCR**
 
 The UCR dataset consist of 15 variables, two of which are the jurisdiction and year of the observation. It provides information about the state population and also about number of violent crimes (murder, manslaughter, rape, robbery, aggravated assault) and property crimes (burglary, larceny, vehicle theft) per state yearly. Detailed definitions of each crimes can be found on UCR Program website.
 
-**Incarcarations in prison**
+**Incarcerations in prison**
 
 The prison data, compared to ucr is in a panel form, consisting of years as columns from 2001 to 2016. Using long_panel, we converted the dataframe so that each row is a different jurisdiction and year. The dataset includes also information indicating whether the number of prisoners also includes jails population.
 
 **State area and region**
 
-In order to enhance further visualisations, we add an information about state area and region based on R built-in *us_states* dataset
+In order to enhance further visualizations, we add an information about state area and region based on R built-in *us_states* dataset
 
 
 
 [^kaggle]: Source: https://www.kaggle.com/christophercorrea/prisoners-and-crime-in-united-states
 [^bjs]: Source: https://www.bjs.gov/index.cfm?ty=dcdetail&iid=269.
 [^fbi]: Source: https://www.ucrdatatool.gov/Search/Crime/State/RunCrimeStatebyState.cfm.
-[^prison_exp]: Source: https://www.bjs.gov/index.cfm?ty=dcdetail&iid=286.
-[^prisoners]: Source: https://www.bjs.gov/index.cfm?ty=dcdetail&iid=269
