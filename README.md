@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-Shiny application address: http://54.173.110.165:3838/myapp/ or https://tinyurl.com/myshinyapp
+Shiny application address: http://35.153.18.124:3838/myapp/ or https://tinyurl.com/crimeshinyapp
 
 ## About the app
 
